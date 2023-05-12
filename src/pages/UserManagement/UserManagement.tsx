@@ -27,6 +27,8 @@ import { formatDate } from '@fullcalendar/core';
 import Button from '../../components/Button/Button';
 import Dropdown from '../../components/Dropdown';
 import { Select } from 'antd';
+import { SelectStyle } from './styles';
+import { ModalAddUser } from './ModalBooking';
 
 const MainLayout = lazy(() => import('../../components/MainLayout'));
 const Table = lazy(() => import('../../components/Table'));
@@ -209,6 +211,7 @@ export default function UserManagement() {
 
   console.log({ selectBookings });
   const handleOptionSelect = () => {};
+  
   return (
     <Suspense fallback={<></>}>
       <MainLayout
@@ -223,12 +226,17 @@ export default function UserManagement() {
                 listPageSize={pageSizeList}
                 onPageSizeChange={setLimit}
               />
-              <Select
+              <SelectStyle
                 allowClear
-                style={{ width: 200, height: 40, display: 'flex', alignItems: 'center', borderRadius: 8 }}
+                style={{
+                  width: 200,
+                  height: 40,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
                 placeholder='Search to status'
                 optionLabelProp='label'
-                className={'options-select-user-status'}
+                className={'options-select-status'}
                 options={[
                   {
                     value: '1',
@@ -241,7 +249,7 @@ export default function UserManagement() {
                 ]}
               />
               <div className={cx('add-user-management')}>
-                <Button label='Add new user' />
+                <Button label='Add new user' onClick={handleAddBooking} />
               </div>
             </div>
           </div>
@@ -314,14 +322,18 @@ export default function UserManagement() {
             <Modal
               isModal={show}
               title={
-                newBooking.current ? 'Thêm cuộc hẹn' : 'Cập nhật trạng thái'
+                newBooking.current ? 'Tạo mới người dùng' : 'Cập nhật trạng thái'
               }
               setOpenModals={setShow}
             >
-              <ModalBooking
-                onCloseModal={() => setShow(false)}
-                defaultValue={newBooking.current ? null : selected}
-              />
+              {newBooking.current ? (
+                <ModalAddUser />
+              ) : (
+                <ModalBooking
+                  onCloseModal={() => setShow(false)}
+                  defaultValue={newBooking.current ? null : selected}
+                />
+              )}
             </Modal>
           </Suspense>
           <Suspense>
